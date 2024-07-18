@@ -5,6 +5,7 @@ import numpy as np
 import numpy.matlib
 from numpy import linalg as la
 from CONST import *
+from vulnerability import *
 import pandas as pd
 import pandapower as pp
 
