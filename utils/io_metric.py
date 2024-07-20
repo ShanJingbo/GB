@@ -1,8 +1,9 @@
-#输入，输出W, D, net
+#输入，输出W, D, net, bus的距离, branch数量
 import scipy.io as sio
 import numpy as np
 import pandapower as pp
 import json
+from CONST import *
 
 # 读取文件内容到字符串中
 def jsonread(name):
@@ -30,3 +31,18 @@ def io_metric():
         D[i][i] = sum(W[i])
     net = pp.create_empty_network()
     return net, W, D
+
+
+def distance():
+    connect = jsonread('connect.json')
+    position = connect['position']
+    branch_num = connect['branch_num']
+    net, W, D = io_metric()
+    distance = np.zeros([BUS_NUM, BUS_NUM])
+    for i in range(0,BUS_NUM):
+        for j in range(0,BUS_NUM):
+            if W[i][j] == 1:
+                distance[i][j] = np.sqrt(np.sum((position[i] - position[j])**2))
+            else:
+                distance[i][j] = np.inf
+    return distance, branch_num
