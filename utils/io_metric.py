@@ -21,28 +21,29 @@ def io_metric():
 
     num_bus = len(connect)
 
-    W = np.zeros([num_bus, num_bus])
-    D = np.diag(np.ones(num_bus))
+    W_pre = np.zeros([num_bus, num_bus])
+    D_pre= np.diag(np.ones(num_bus))
     for i in range(0,num_bus):
         for j in range(0,num_bus):
             if (j+1) in connect[i]:
-                W[i][j] = 1
+                W_pre[i][j] = 1
     for i in range(0,num_bus):
-        D[i][i] = sum(W[i])
-    net = pp.create_empty_network()
-    return net, W, D
+        D_pre[i][i] = sum(W_pre[i])
+    # net = pp.create_empty_network()
+    # pp.create_bus(net, name="1", vn_kv="110")
+    return W_pre, D_pre
 
 
 def distance():
     connect = jsonread('connect.json')
     position = connect['position']
     branch_num = connect['branch_num']
-    net, W, D = io_metric()
+    W, D = io_metric()
     distance = np.zeros([BUS_NUM, BUS_NUM])
     for i in range(0,BUS_NUM):
         for j in range(0,BUS_NUM):
             if W[i][j] == 1:
-                distance[i][j] = np.sqrt(np.sum((position[i] - position[j])**2))
+                distance[i][j] = np.sqrt(np.dot(position[i] - position[j], position[i] - position[j]))
             else:
                 distance[i][j] = np.inf
     return distance, branch_num

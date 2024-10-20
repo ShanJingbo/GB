@@ -1,2 +1,2 @@
-Tst = [i for i in range(11)]
-print(Tst)
+import numpy as np
+from sympy import symbols
